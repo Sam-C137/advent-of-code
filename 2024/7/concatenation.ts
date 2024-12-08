@@ -24,23 +24,41 @@ function get_values(input: string): [number, number[]] {
     ];
 }
 
-function operate(nums: number[], target: number, idx = 0, curr = 0): boolean {
+function operate(
+    nums: number[],
+    target: number,
+    idx = 0,
+    curr = 0,
+    map?: Map<string, boolean>,
+): boolean {
+    if (!map) {
+        map = new Map();
+    }
+
+    if (map.has(`${idx},${curr}`)) {
+        return map.get(`${idx},${curr}`) ?? false;
+    }
+
     if (idx === nums.length) {
         return curr === target;
     }
 
-    if (operate(nums, target, idx + 1, curr + nums[idx])) {
+    if (operate(nums, target, idx + 1, curr + nums[idx], map)) {
+        map.set(`${idx},${curr}`, true);
         return true;
     }
 
-    if (operate(nums, target, idx + 1, curr * nums[idx])) {
+    if (operate(nums, target, idx + 1, curr * nums[idx], map)) {
+        map.set(`${idx},${curr}`, true);
         return true;
     }
 
-    if (operate(nums, target, idx + 1, Number(`${curr}${nums[idx]}`))) {
+    if (operate(nums, target, idx + 1, Number(`${curr}${nums[idx]}`), map)) {
+        map.set(`${idx},${curr}`, true);
         return true;
     }
 
+    map.set(`${idx},${curr}`, false);
     return false;
 }
 

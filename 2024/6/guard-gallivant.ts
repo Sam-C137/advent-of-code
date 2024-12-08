@@ -2,8 +2,8 @@ const OBSTACLE = "#";
 const GUARD = "^";
 
 interface Point {
-    x: number;
-    y: number;
+    c: number;
+    r: number;
 }
 
 async function main() {
@@ -42,36 +42,36 @@ function walk(
     current_direction = 0,
 ): void {
     if (
-        curr.x < 0 ||
-        curr.x >= maze[0].length ||
-        curr.y < 0 ||
-        curr.y >= maze.length
+        curr.c < 0 ||
+        curr.c >= maze[0].length ||
+        curr.r < 0 ||
+        curr.r >= maze.length
     ) {
         return;
     }
 
-    if (!seen[curr.y][curr.x]) path.push(curr);
-    seen[curr.y][curr.x] = true;
+    if (!seen[curr.r][curr.c]) path.push(curr);
+    seen[curr.r][curr.c] = true;
 
-    const [dx, dy] = directions[current_direction];
-    const next_x = curr.x + dx;
-    const next_y = curr.y + dy;
+    const [dc, dr] = directions[current_direction];
+    const next_c = curr.c + dc;
+    const next_r = curr.r + dr;
 
     if (
-        next_x >= 0 &&
-        next_x < maze[0].length &&
-        next_y >= 0 &&
-        next_y < maze.length &&
-        maze[next_y][next_x] === OBSTACLE
+        next_c >= 0 &&
+        next_c < maze[0].length &&
+        next_r >= 0 &&
+        next_r < maze.length &&
+        maze[next_r][next_c] === OBSTACLE
     ) {
         const next_direction = (current_direction + 1) % directions.length;
         current_direction = next_direction;
-        const [new_dx, new_dy] = directions[next_direction];
+        const [new_dc, new_dr] = directions[next_direction];
         return walk(
             maze,
             {
-                x: curr.x + new_dx,
-                y: curr.y + new_dy,
+                c: curr.c + new_dc,
+                r: curr.r + new_dr,
             },
             seen,
             path,
@@ -82,8 +82,8 @@ function walk(
     return walk(
         maze,
         {
-            x: next_x,
-            y: next_y,
+            c: next_c,
+            r: next_r,
         },
         seen,
         path,
@@ -93,16 +93,16 @@ function walk(
 
 function get_maze(lines: string[]): [string[][], Point] {
     let start: Point = {
-        x: 0,
-        y: 0,
+        c: 0,
+        r: 0,
     };
 
     return [
         lines.map((l, idx) => {
             if (l.includes(GUARD))
                 start = {
-                    x: l.indexOf(GUARD),
-                    y: idx,
+                    c: l.indexOf(GUARD),
+                    r: idx,
                 };
             return l.split("");
         }),
@@ -113,8 +113,8 @@ function get_maze(lines: string[]): [string[][], Point] {
 function debug(maze: string[][], path: Point[]) {
     function drawPath(data: string[][], path: Point[]) {
         path.forEach((p) => {
-            if (data[p.y] && data[p.y][p.x]) {
-                data[p.y][p.x] = "X";
+            if (data[p.r] && data[p.r][p.c]) {
+                data[p.r][p.c] = "X";
             }
         });
         return data.map((d) => d.join(""));

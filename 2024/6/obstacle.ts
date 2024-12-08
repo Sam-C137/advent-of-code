@@ -3,8 +3,8 @@ const GUARD = "^";
 const SPACE = ".";
 
 interface Point {
-    x: number;
-    y: number;
+    c: number;
+    r: number;
 }
 
 async function main() {
@@ -24,18 +24,18 @@ async function main() {
 
     let loop_count = 0;
 
-    for (const { x, y } of path) {
-        if (maze[y][x] !== SPACE) {
+    for (const { c, r } of path) {
+        if (maze[r][c] !== SPACE) {
             continue;
         }
 
-        maze[y][x] = OBSTACLE;
+        maze[r][c] = OBSTACLE;
 
         if (loops(maze, start)) {
             loop_count++;
         }
 
-        maze[y][x] = SPACE;
+        maze[r][c] = SPACE;
     }
 
     return loop_count;
@@ -56,36 +56,36 @@ function walk(
     current_direction = 0,
 ): void {
     if (
-        curr.x < 0 ||
-        curr.x >= maze[0].length ||
-        curr.y < 0 ||
-        curr.y >= maze.length
+        curr.c < 0 ||
+        curr.c >= maze[0].length ||
+        curr.r < 0 ||
+        curr.r >= maze.length
     ) {
         return;
     }
 
-    if (!seen[curr.y][curr.x]) path.push(curr);
-    seen[curr.y][curr.x] = true;
+    if (!seen[curr.r][curr.c]) path.push(curr);
+    seen[curr.r][curr.c] = true;
 
-    const [dx, dy] = directions[current_direction];
-    const next_x = curr.x + dx;
-    const next_y = curr.y + dy;
+    const [dc, dr] = directions[current_direction];
+    const next_c = curr.c + dc;
+    const next_r = curr.r + dr;
 
     if (
-        next_x >= 0 &&
-        next_x < maze[0].length &&
-        next_y >= 0 &&
-        next_y < maze.length &&
-        maze[next_y][next_x] === OBSTACLE
+        next_c >= 0 &&
+        next_c < maze[0].length &&
+        next_r >= 0 &&
+        next_r < maze.length &&
+        maze[next_r][next_c] === OBSTACLE
     ) {
         const next_direction = (current_direction + 1) % directions.length;
         current_direction = next_direction;
-        const [new_dx, new_dy] = directions[next_direction];
+        const [new_dc, new_dr] = directions[next_direction];
         return walk(
             maze,
             {
-                x: curr.x + new_dx,
-                y: curr.y + new_dy,
+                c: curr.c + new_dc,
+                r: curr.r + new_dr,
             },
             seen,
             path,
@@ -96,8 +96,8 @@ function walk(
     return walk(
         maze,
         {
-            x: next_x,
-            y: next_y,
+            c: next_c,
+            r: next_r,
         },
         seen,
         path,
@@ -105,32 +105,32 @@ function walk(
     );
 }
 
-function loops(grid: string[][], { x, y }: Point) {
-    let dy = -1;
-    let dx = 0;
+function loops(grid: string[][], { c, r }: Point) {
+    let dr = -1;
+    let dc = 0;
 
     const seen = new Set();
 
     while (true) {
-        seen.add(`${y},${x},${dx},${dy}`);
+        seen.add(`${r},${c},${dc},${dr}`);
 
         if (
-            y + dy < 0 ||
-            y + dy >= grid.length ||
-            x + dx < 0 ||
-            x + dx >= grid[0].length
+            r + dr < 0 ||
+            r + dr >= grid.length ||
+            c + dc < 0 ||
+            c + dc >= grid[0].length
         ) {
             return false;
         }
 
-        if (grid[y + dy][x + dx] === OBSTACLE) {
-            [dx, dy] = [-dy, dx];
+        if (grid[r + dr][c + dc] === OBSTACLE) {
+            [dc, dr] = [-dr, dc];
         } else {
-            y += dy;
-            x += dx;
+            r += dr;
+            c += dc;
         }
 
-        if (seen.has(`${y},${x},${dx},${dy}`)) {
+        if (seen.has(`${r},${c},${dc},${dr}`)) {
             return true;
         }
     }
@@ -138,16 +138,16 @@ function loops(grid: string[][], { x, y }: Point) {
 
 function get_maze(lines: string[]): [string[][], Point] {
     let start: Point = {
-        x: 0,
-        y: 0,
+        c: 0,
+        r: 0,
     };
 
     return [
         lines.map((l, idx) => {
             if (l.includes(GUARD))
                 start = {
-                    x: l.indexOf(GUARD),
-                    y: idx,
+                    c: l.indexOf(GUARD),
+                    r: idx,
                 };
             return l.split("");
         }),
