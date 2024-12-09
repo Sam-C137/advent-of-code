@@ -132,7 +132,7 @@ dist
 
 .vuepress/dist
 
-# vuepress v2.x temp and cache directory
+# vuepress v2.c temp and cache directory
 
 .temp
 
@@ -173,3 +173,6 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# AOC input
+input.txt
