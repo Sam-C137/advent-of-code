@@ -19,3 +19,5 @@ interface NonEmptyArray<T> extends Array<T> {
 
 export const is_not_empty = <T>(arr: T[]): arr is NonEmptyArray<T> =>
     arr.length > 0;
+
+export * from "./ds.ts";

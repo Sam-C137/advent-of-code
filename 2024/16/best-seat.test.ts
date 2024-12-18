@@ -94,5 +94,3 @@ describe("best seats", () => {
         expect(result).toEqual(479);
     });
 });
-
-console.log(await main());
